@@ -23,24 +23,25 @@ Form {
     id: form
 
     VariablesForm {
-        defaultAssignedVariablesList {
+        AvailableVariablesList { name: "variablesList"}
+        AssignedVariablesList {
             name: "dependent"
             title: qsTr("Dependent Variable")
-            singleItem: true
+            singleVariable: true
             allowedColumns: ["scale"]
         }
 
         AssignedVariablesList {
             name: "fixedFactors"
             title: qsTr("Fixed Factors")
-            singleItem: true
+            singleVariable: true
             allowedColumns: ["ordinal", "nominal"]
         }
 
         AssignedVariablesList {
             name: "covariates"
             title: qsTr("Covariates")
-            singleItem: false
+            singleVariable: false
             allowedColumns: ["ordinal", "nominal", "scale"]
         }
     }
@@ -77,20 +78,22 @@ Form {
                 }
         }
 
-    Text {
-      text: "Place each hypothesis on a new line. For example:\n\nfactor.low = factor.med = factor.high\nfactor.low < factor.med < factor.high\n\nwhere factor is the factor name and low/med/high are the factor level names."
-    }
-
     ExpanderButton {
         text: qsTr("Model Constraints")
 
-        TextArea {
-            name: "model"
-            implicitHeight: 200
-            infoText: Qt.platform.os == "osx" ? "\u2318 + Enter to apply" : "Crtl + Enter to apply"
-            text: ""
-        }
+        GridLayout {
+          columns: 1
 
+          Text {
+            text: "Place each hypothesis on a new line. For example:\n\nfactor.low = factor.med = factor.high\nfactor.low < factor.med < factor.high\n\nwhere factor is the factor name and low/med/high are the factor level names."
+          }
+
+          TextArea {
+              name: "model"
+              implicitHeight: 200
+              infoText: Qt.platform.os == "osx" ? "\u2318 + Enter to apply" : "Crtl + Enter to apply"
+              text: ""
+          }
+       }
     }
-
 }

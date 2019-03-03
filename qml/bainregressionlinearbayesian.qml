@@ -23,17 +23,18 @@ Form {
     id: form
 
     VariablesForm {
-        defaultAssignedVariablesList {
+        AvailableVariablesList { name: "variablesList"}
+        AssignedVariablesList {
             name: "dependent"
             title: qsTr("Dependent Variable")
-            singleItem: true
+            singleVariable: true
             allowedColumns: ["scale"]
         }
 
         AssignedVariablesList {
             name: "covariates"
             title: qsTr("Covariates")
-            singleItem: false
+            singleVariable: false
             allowedColumns: ["ordinal", "nominal", "scale"]
         }
     }
@@ -74,20 +75,22 @@ Form {
           }
         }
 
-    Text {
-      text: "Place each hypothesis on a new line. For example:\n\nage = length = weight\nage < length < weight\n\nwhere age, length and weight are the names of the predictors."
-    }
-
     ExpanderButton {
         text: qsTr("Model Constraints")
 
-        TextArea {
-            name: "model"
-            implicitHeight: 200
-            infoText: Qt.platform.os == "osx" ? "\u2318 + Enter to apply" : "Crtl + Enter to apply"
-            text: ""
+        GridLayout {
+          columns: 1
+
+          Text {
+            text: "Place each hypothesis on a new line. For example:\n\nage = length = weight\nage < length < weight\n\nwhere age, length and weight are the names of the predictors."
+          }
+
+          TextArea {
+              name: "model"
+              implicitHeight: 200
+              infoText: Qt.platform.os == "osx" ? "\u2318 + Enter to apply" : "Crtl + Enter to apply"
+              text: ""
+          }
         }
-
     }
-
 }

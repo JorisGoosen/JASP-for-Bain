@@ -2,7 +2,7 @@
 	"moduleDescription" :
 	{
 		"title" : 									"Bain",
-		"description": 							"Module for Bayesian Informative Hypothesis Testing",
+		"description": 							"Dynamic Module for computing approximated adjusted fractional Bayes factors for equality, inequality, and about equality constrained hypotheses.",
 		"version":									1.0,
 		"author":										"Herbert Hoijtink, Joris Mulder & Xin Gu",
 		"maintainer":								"Koen Derks <k.derks@nyenrode.nl>",

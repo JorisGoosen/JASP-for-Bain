@@ -23,17 +23,18 @@ Form {
     id: form
 
     VariablesForm {
-        defaultAssignedVariablesList {
+        AvailableVariablesList { name: "variablesList"}
+        AssignedVariablesList {
             name: "dependent"
             title: qsTr("Dependent Variable")
-            singleItem: true
+            singleVariable: true
             allowedColumns: ["scale"]
         }
 
         AssignedVariablesList {
             name: "fixedFactors"
             title: qsTr("Fixed Factors")
-            singleItem: true
+            singleVariable: true
             allowedColumns: ["ordinal", "nominal"]
         }
 
@@ -58,8 +59,8 @@ Form {
               PercentField {
                 name: "CredibleInterval"
                 Layout.leftMargin: 25
-                label.text: qsTr("Credible interval")
-                with1Decimal: false
+                text: qsTr("Credible interval")
+                decimals: 1
                 defaultValue: 95
                 enabled: descriptives.checked
               }
@@ -93,7 +94,5 @@ Form {
             infoText: Qt.platform.os == "osx" ? "\u2318 + Enter to apply" : "Crtl + Enter to apply"
             text: ""
         }
-
     }
-
 }

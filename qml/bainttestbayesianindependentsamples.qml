@@ -23,16 +23,17 @@ Form {
     id: form
 
     VariablesForm {
-        defaultAssignedVariablesList {
+        AvailableVariablesList { name: "variablesList"}
+        AssignedVariablesList {
             name: "variables"
             title: qsTr("Dependent Variables")
-            singleItem: false
+            singleVariable: false
             allowedColumns: ["scale"]
         }
         AssignedVariablesList {
             name: "groupingVariable"
             title: qsTr("Grouping Variable")
-            singleItem: true
+            singleVariable: true
             allowedColumns: ["nominal"]
         }
     }
@@ -42,7 +43,7 @@ Form {
 
         ColumnLayout {
 
-            ButtonGroup {
+            RadioButtonGroup {
                 title: qsTr("Hypothesis Test")
                 name: "hypothesis"
 
@@ -53,7 +54,7 @@ Form {
                 RadioButton { text: qsTr("Equal vs. bigger vs. smaller")            ; name: "allTypes" }
             }
 
-            ButtonGroup {
+            RadioButtonGroup {
                 title: qsTr("Bayes Factor")
                 name: "bayesFactorType"
 
@@ -89,14 +90,12 @@ Form {
                 PercentField {
                   name: "descriptivesPlotsCredibleInterval"
                   Layout.leftMargin: 25
-                  label.text: qsTr("Credible interval")
-                  with1Decimal: false
+                  text: qsTr("Credible interval")
+                  decimals: 1
                   defaultValue: 95
                   enabled: descriptives.checked
                 }
             }
         }
-
     }
-
 }
