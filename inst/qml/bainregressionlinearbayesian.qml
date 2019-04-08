@@ -46,7 +46,7 @@ Form {
             title: qsTr("Tables")
 
               CheckBox {
-                  name: "BFmatrix"
+                  name: "bayesFactorMatrix"
                   text: qsTr("Bayes factor matrix")
               }
 
@@ -60,7 +60,7 @@ Form {
                 title: qsTr("Plots")
 
                   CheckBox {
-                      name: "BFplot"
+                      name: "bayesFactorPlot"
                       text: qsTr("Bayes factor comparison")
                   }
                 }
@@ -82,7 +82,7 @@ Form {
           columns: 1
 
           Text {
-            text: "Place each hypothesis on a new line. For example:\n\nage = length = weight\nage < length < weight\n\nwhere age, length and weight are the names of the predictors."
+            text: "Place each hypothesis on a new line. For example:\n\nage = length = weight\nage < length < weight,\n\nwhere age, length and weight are the names of the predictors.\nRead the help file for further instructions."
           }
 
           TextArea {

@@ -22,34 +22,25 @@ import JASP.Controls 1.0
 Form {
     id: form
 
-    VariablesForm {
-        AvailableVariablesList { name: "variablesList"}
-        AssignedVariablesList {
-            name: "variables"
-            title: qsTr("Variables")
-            singleVariable: false
-            allowedColumns: ["scale"]
-        }
-    }
+    VariablesForm
+  	{
+  		height: 200
+  		AvailableVariablesList { name: "allVariablesList" }
+  		AssignedVariablesList { name: "pairs"; title: qsTr("Pairs"); allowedColumns: ["scale"]; listViewType: "Pairs" }
+  	}
 
     GridLayout {
         columns: 2
 
         ColumnLayout {
-            TextField {
-                text: qsTr("Test value")
-                value: "0"
-                name: "testValue"
-                inputType: "number"
-            }
 
             RadioButtonGroup {
                 title: qsTr("Hypothesis Test")
                 name: "hypothesis"
 
-                RadioButton { text: qsTr("Equal vs. not equal")                     ; name: "notEqualToTestValue" ; checked: true}
-                RadioButton { text: qsTr("Equal vs. bigger")                        ; name: "greaterThanTestValue" }
-                RadioButton { text: qsTr("Equal vs. smaller")                       ; name: "lessThanTestValue" }
+                RadioButton { text: qsTr("Equal vs. not equal")                     ; name: "groupsNotEqual" ; checked: true}
+                RadioButton { text: qsTr("Equal vs. bigger")                        ; name: "groupOneGreater" }
+                RadioButton { text: qsTr("Equal vs. smaller")                       ; name: "groupTwoGreater" }
                 RadioButton { text: qsTr("Bigger vs. smaller")                      ; name: "_4type" }
                 RadioButton { text: qsTr("Equal vs. bigger vs. smaller")            ; name: "allTypes" }
             }
@@ -77,7 +68,7 @@ Form {
                 title: qsTr("Plots")
 
                 CheckBox {
-                    name: "plotPriorAndPosterior"
+                    name: "bayesFactorPlot"
                     text: qsTr("Bayes factor comparison")
                 }
 
@@ -96,5 +87,7 @@ Form {
                 }
             }
         }
+
     }
+
 }

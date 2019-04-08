@@ -38,6 +38,12 @@ Form {
             allowedColumns: ["ordinal", "nominal"]
         }
 
+        AssignedVariablesList {
+            name: "covariates"
+            title: qsTr("Covariates")
+            singleVariable: false
+            allowedColumns: ["ordinal", "nominal", "scale"]
+        }
     }
 
     GridLayout {
@@ -47,22 +53,13 @@ Form {
             title: qsTr("Tables")
 
               CheckBox {
-                  name: "BFmatrix"
+                  name: "bayesFactorMatrix"
                   text: qsTr("Bayes factor matrix")
               }
 
               CheckBox {
-                  id: descriptives
-                  name: "descriptives"
-                  text: qsTr("Descriptives")
-              }
-              PercentField {
-                name: "CredibleInterval"
-                Layout.leftMargin: 25
-                text: qsTr("Credible interval")
-                decimals: 1
-                defaultValue: 95
-                enabled: descriptives.checked
+                  name: "coefficients"
+                  text: qsTr("Coefficients")
               }
             }
 
@@ -70,29 +67,33 @@ Form {
                 title: qsTr("Plots")
 
                   CheckBox {
-                      name: "BFplot"
+                      name: "bayesFactorPlot"
                       text: qsTr("Bayes factor comparison")
                   }
 
                   CheckBox {
-                      name: "plotDescriptives"
+                      name: "descriptivesPlot"
                       text: qsTr("Descriptives plot")
                   }
                 }
         }
 
-    Text {
-      text: "Place each hypothesis on a new line. For example:\n\nfactor.low = factor.med = factor.high\nfactor.low < factor.med < factor.high\n\nwhere factor is the factor name and low/med/high are the factor level names."
-    }
-
     ExpanderButton {
         text: qsTr("Model Constraints")
 
-        TextArea {
-            name: "model"
-            implicitHeight: 200
-            infoText: Qt.platform.os == "osx" ? "\u2318 + Enter to apply" : "Crtl + Enter to apply"
-            text: ""
-        }
+        GridLayout {
+          columns: 1
+
+          Text {
+            text: "Place each hypothesis on a new line. For example:\n\nfactor.low = factor.med = factor.high\nfactor.low < factor.med < factor.high\n\nwhere factor is the factor name and low/med/high are the factor level names.\nRead the help file for further instructions."
+          }
+
+          TextArea {
+              name: "model"
+              implicitHeight: 200
+              infoText: Qt.platform.os == "osx" ? "\u2318 + Enter to apply" : "Crtl + Enter to apply"
+              text: ""
+          }
+       }
     }
 }

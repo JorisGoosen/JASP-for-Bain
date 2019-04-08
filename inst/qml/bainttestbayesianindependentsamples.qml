@@ -23,7 +23,7 @@ Form {
     id: form
 
     VariablesForm {
-        AvailableVariablesList { name: "variablesList"}
+        AvailableVariablesList { name: "variablesList"; allowedColumns: ["scale"]}
         AssignedVariablesList {
             name: "variables"
             title: qsTr("Dependent Variables")
@@ -78,7 +78,7 @@ Form {
                 title: qsTr("Plots")
 
                 CheckBox {
-                    name: "plotPriorAndPosterior"
+                    name: "bayesFactorPlot"
                     text: qsTr("Bayes factor comparison")
                 }
 
