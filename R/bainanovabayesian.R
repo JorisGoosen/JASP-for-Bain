@@ -56,7 +56,7 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 	message <- "BF.c denotes the Bayes factor of the hypothesis in the row versus its complement.
 				Posterior model probabilities (a: excluding the unconstrained hypothesis, b: including the unconstrained hypothesis) are based on equal prior model probabilities."
 	bainTable$addFootnote(message=message, symbol="<i>Note.</i>")
-	
+
 	bainTable$addCitation("Gu, X., Mulder, J., and Hoijtink, H. (2017). Approximate adjusted fractional Bayes factors: A general method for testing informative hypotheses. British Journal of Mathematical and Statistical Psychology. DOI:10.1111/bmsp.12110")
 	bainTable$addCitation("Hoijtink, H., Mulder, J., van Lissa, C., and Gu, X. (2018). A Tutorial on testing hypotheses using the Bayes factor. Psychological Methods.")
 	bainTable$addCitation("Hoijtink, H., Gu, X., and Mulder, J. (2018). Bayesian evaluation of informative hypotheses for multiple populations. Britisch Journal of Mathematical and Statistical Psychology. DOI: 10.1111/bmsp.12145")
@@ -96,7 +96,7 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 	  IRr <- NULL
 
 		p <- try(silent= FALSE, expr= {
-			bainResult <- Bain::Bain_anova(X = dataset, dep_var = dependent, group = group, ERr, IRr)
+			bainResult <- Bain::Bain_anova(X = dataset, dep_var = .v(options[["dependent"]]), group = .v(options[["fixedFactors"]]), ERr, IRr)
 			jaspResults[["bainResult"]] <- createJaspState(bainResult)
 			jaspResults[["bainResult"]]$dependOnOptions(c("dependent", "fixedFactors", "model"))
 		})
@@ -113,8 +113,8 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 			inpt <- list()
 			names(dataset) <- .unv(names(dataset))
 			inpt[[1]] <- dataset
-			inpt[[2]] <- .unv(dependent)
-			inpt[[3]] <- .unv(group)
+			inpt[[2]] <- options[["dependent"]]
+			inpt[[3]] <- options[["fixedFactors"]]
 			inpt[[4]] <- rest.string
 
 			p <- try(silent= FALSE, expr= {
@@ -160,7 +160,7 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 			overTitle <- paste0(interval, "% Credible Interval")
 			descriptivesTable$addColumnInfo(name="lowerCI",      title = "lowerCI", type="number", format="sf:4;dp:3", overtitle = overTitle)
     	descriptivesTable$addColumnInfo(name="upperCI",      title = "upperCI", type="number", format="sf:4;dp:3", overtitle = overTitle)
-			
+
 			if(!ready)
 				return()
 
@@ -187,7 +187,10 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 	if(options[["bayesFactorPlot"]] && ready){
 	  if(is.null(jaspResults[["bayesFactorPlot"]])){
 			bainResult <- jaspResults[["bainResult"]]$object
-	      jaspResults[["bayesFactorPlot"]] <- createJaspPlot(plot = .plot.BainA(bainResult), title = "Bayes Factor Comparison")
+				png(tempfile())
+				p <- .plot.BainA(bainResult)
+				dev.off()
+	      jaspResults[["bayesFactorPlot"]] <- createJaspPlot(plot = p, title = "Bayes Factor Comparison")
 	      jaspResults[["bayesFactorPlot"]]$dependOnOptions(c("bayesFactorPlot", "fixedFactors", "dependent", "model"))
 				jaspResults[["bayesFactorPlot"]]$position <- 4
 		}
@@ -213,22 +216,22 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 					 }
 			groupVars <- options$fixedFactors
 			groupVars <- unlist(groupVars)
-	
+
 			groupVarsV <- .v(groupVars)
 			dependentV <- .v(options$dependent)
-	
+
 			sum_model <- bainResult$estimate_res
 			summaryStat <- summary(sum_model)$coefficients
-	
+
 			if(type == "ancova"){
 				summaryStat <- summaryStat[-(nrow(summaryStat) - 0:(length(options[["covariates"]])-1)), ] # Remove covars rows
 			}
-	
+
 			summaryStat <- cbind(summaryStat, 1:nrow(summaryStat))
 			colnames(summaryStat)[length(colnames(summaryStat))] <- "plotHorizontalAxis"
 			colnames(summaryStat)[which(colnames(summaryStat) == "Estimate")] <- "dependent"
 			summaryStatSubset <- as.data.frame(summaryStat)
-			
+
 			groupCol <- dataset[ , .v(options[["fixedFactors"]])]
 			varLevels <- levels(groupCol)
 			ciLower <- summaryStatSubset[, 1] - 1.96*summaryStatSubset[, 2]
@@ -236,18 +239,18 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 			summaryStatSubset$ciLower <- ciLower
 			summaryStatSubset$ciUpper <- ciUpper
 			summaryStat <- summaryStatSubset
-	
+
 				p <- ggplot2::ggplot(summaryStatSubset, ggplot2::aes(x=plotHorizontalAxis,
 											y=dependent,
 											group=1))
-	
-	
+
+
 				pd <- ggplot2::position_dodge(.2)
 				p = p + ggplot2::geom_errorbar(ggplot2::aes(ymin=ciLower,
 															ymax=ciUpper),
 															colour="black", width=.2, position=pd)
-	
-	
+
+
 			p <- p + ggplot2::geom_line(position=pd, size = .7) +
 				ggplot2::geom_point(position=pd, size=4) +
 				ggplot2::scale_fill_manual(values = c(rep(c("white","black"),5),rep("grey",100)), guide=ggplot2::guide_legend(nrow=10)) +
@@ -257,7 +260,7 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 				ggplot2::xlab(groupVars) +
 				base_breaks_y(summaryStat, TRUE)
 			p <- JASPgraphs::themeJasp(p)
-				
+
 				jaspResults[["descriptivesPlot"]] <- createJaspPlot(plot = p, title = "Descriptives Plot")
 				jaspResults[["descriptivesPlot"]]$dependOnOptions(c("descriptivesPlot", "fixedFactors", "dependent", "model"))
 				jaspResults[["descriptivesPlot"]]$position <- 4
@@ -277,7 +280,7 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 	factor.variables 							<- unlist(options$fixedFactors)
 	factor.variables 							<- factor.variables[factor.variables != ""]
 	all.variables 								<- c(numeric.variables, factor.variables)
-	
+
 	if (is.null(dataset)) {
 		trydata                                 <- .readDataSetToEnd(columns.as.numeric=all.variables)
 		missingValuesIndicator                  <- .unv(names(which(apply(trydata, 2, function(x){ any(is.na(x))} ))))

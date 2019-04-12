@@ -20,7 +20,6 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 	jaspResults$title <- "Bain Linear Regression"
 	### READY ###
 	ready <- (options[["dependent"]] != "" && unlist(options[["covariates"]]) != "" && !is.null(unlist(options[["covariates"]])))
-	print(ready)
 	### READ DATA ###
 	readList <- .readDataBainLinearRegression(options, dataset)
 	dataset <- readList[["dataset"]]
@@ -47,7 +46,7 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 	jaspResults[["bainTable"]]     	<- bainTable
 	bainTable$dependOnOptions(c("dependent", "covariates", "model", "standardized"))
 	bainTable$position <- 1
-	
+
 	bainTable$addColumnInfo(name="hypotheses", type="string", title="")
 	bainTable$addColumnInfo(name="BF", type="number", format="sf:4;dp:3", title= "BF.c")
 	bainTable$addColumnInfo(name="PMP1", type="number", format="sf:4;dp:3", title="PMP a")
@@ -56,11 +55,11 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 	message <- "BF.c denotes the Bayes factor of the hypothesis in the row versus its complement.
 				Posterior model probabilities (a: excluding the unconstrained hypothesis, b: including the unconstrained hypothesis) are based on equal prior model probabilities."
 	bainTable$addFootnote(message=message, symbol="<i>Note.</i>")
-	
+
 	bainTable$addCitation("Gu, X., Mulder, J., and Hoijtink, H. (2017). Approximate adjusted fractional Bayes factors: A general method for testing informative hypotheses. British Journal of Mathematical and Statistical Psychology. DOI:10.1111/bmsp.12110")
 	bainTable$addCitation("Hoijtink, H., Mulder, J., van Lissa, C., and Gu, X. (2018). A Tutorial on testing hypotheses using the Bayes factor. Psychological Methods.")
 	bainTable$addCitation("Hoijtink, H., Gu, X., and Mulder, J. (2018). Bayesian evaluation of informative hypotheses for multiple populations. Britisch Journal of Mathematical and Statistical Psychology. DOI: 10.1111/bmsp.12145")
-	
+
 	if(!ready)
 		return()
 
@@ -72,7 +71,7 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 			bainTable$addFootnote(message= paste0("The variable ", variables[i], " contains missing values, the rows containing these values are removed in the analysis."), symbol="<b>Warning.</b>")
 		}
 	}
-	
+
 	if(options$model == ""){
 		jaspResults$startProgressbar(3)
 		jaspResults$progressbarTick()
@@ -138,7 +137,10 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 	if(options[["bayesFactorPlot"]] && ready){
 	  if(is.null(jaspResults[["bayesFactorPlot"]])){
 			bainResult <- jaspResults[["bainResult"]]$object
-	      jaspResults[["bayesFactorPlot"]] 		<- createJaspPlot(plot = .plot.BainR(bainResult), title = "Bayes Factor Comparison")
+				png(tempfile())
+				p <- .plot.BainR(bainResult)
+				dev.off()
+	      jaspResults[["bayesFactorPlot"]] 		<- createJaspPlot(plot = p, title = "Bayes Factor Comparison")
 	      jaspResults[["bayesFactorPlot"]]			$dependOnOptions(c("bayesFactorPlot", "covariates", "dependent", "model", "standardized"))
 				jaspResults[["bayesFactorPlot"]] 		$position <- 4
 		}
@@ -171,7 +173,7 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 			bainResult <- jaspResults[["bainResult"]]$object
 			if(!ready || is.null(bainResult))
 				return()
-				
+
 			sum_model <- bainResult[["estimate_res"]]
 
 			if(!options[["standardized"]]){
