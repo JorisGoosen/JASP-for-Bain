@@ -2,8 +2,9 @@
 	"moduleDescription" :
 	{
 		"title" : 									"Bain",
+		"icon": 									"analysis-bayesian-ttest.svg",
 		"description": 							"Dynamic Module for computing approximated adjusted fractional Bayes factors for equality, inequality, and about equality constrained hypotheses.",
-		"version":									1.0,
+		"version":									"1.0",
 		"author":										"Herbert Hoijtink, Joris Mulder & Xin Gu",
 		"maintainer":								"Koen Derks <k.derks@nyenrode.nl>",
 		"website":									"www.informative-hypotheses.sites.uu.nl/software/bain/",
@@ -12,64 +13,51 @@
 
 	"requiredPackages":	[],
 
-	"ribbonEntries":
+	"menu":
 	[
 		{
-			"title": 									"T-Tests",
-			"icon": 									"analysis-bayesian-ttest.svg",
-			"analyses":
-			[
-				{
-					"title":							"Bain Welch's T-Test",
-					"qml":								"bainttestbayesianindependentsamples.qml",
-					"function":						"BainTTestBayesianIndependentSamples",
-					"usesJaspResults":		true
-				},
-				{
-					"title":							"Bain Paired Samples T-Test",
-					"qml":								"bainttestbayesianpairedsamples.qml",
-					"function":						"BainTTestBayesianPairedSamples",
-					"usesJaspResults":		true
-				},
-				{
-					"title":							"Bain One Sample T-Test",
-					"qml":								"bainttestbayesianonesample.qml",
-					"function":						"BainTTestBayesianOneSample",
-					"usesJaspResults":		true
-				}
-			]
+			"title":							"Bain Welch's T-Test",
+			"qml":								"bainttestbayesianindependentsamples.qml",
+			"function":						"BainTTestBayesianIndependentSamples",
+			"usesJaspResults":		true
+		},
+		{
+			"title":							"Bain Paired Samples T-Test",
+			"qml":								"bainttestbayesianpairedsamples.qml",
+			"function":						"BainTTestBayesianPairedSamples",
+			"usesJaspResults":		true
+		},
+		{
+			"title":							"Bain One Sample T-Test",
+			"qml":								"bainttestbayesianonesample.qml",
+			"function":						"BainTTestBayesianOneSample",
+			"usesJaspResults":		true
 		},
 		{
 			"title": 									"ANOVA",
-			"icon": 									"analysis-bayesian-anova.svg",
-			"analyses":
-			[
-				{
-					"title":							"Bain ANOVA",
-					"qml":								"bainanovabayesian.qml",
-					"function":						"BainAnovaBayesian",
-					"usesJaspResults":		true
-				},
-				{
-					"title":							"Bain ANCOVA",
-					"qml":								"bainancovabayesian.qml",
-					"function":						"BainAncovaBayesian",
-					"usesJaspResults":		true
-				}
-			]
+			"icon": 									"analysis-bayesian-anova.svg"
+		},
+		{
+			"title":							"Bain ANOVA",
+			"qml":								"bainanovabayesian.qml",
+			"function":						"BainAnovaBayesian",
+			"usesJaspResults":		true
+		},
+		{
+			"title":							"Bain ANCOVA",
+			"qml":								"bainancovabayesian.qml",
+			"function":						"BainAncovaBayesian",
+			"usesJaspResults":		true
 		},
 		{
 			"title": 									"Regression",
-			"icon": 									"analysis-bayesian-regression.svg",
-			"analyses":
-			[
-				{
-					"title":							"Bain Linear Regression",
-					"qml":								"bainregressionlinearbayesian.qml",
-					"function":						"BainRegressionLinearBayesian",
-					"usesJaspResults":		true
-				}
-			]
+			"icon": 									"analysis-bayesian-regression.svg"
+		},
+		{
+			"title":							"Bain Linear Regression",
+			"qml":								"bainregressionlinearbayesian.qml",
+			"function":						"BainRegressionLinearBayesian",
+			"usesJaspResults":		true
 		}
 	]
 }

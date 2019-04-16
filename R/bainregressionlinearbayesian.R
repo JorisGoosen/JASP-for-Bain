@@ -16,22 +16,26 @@
 #
 
 BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
-	### TITLE ###
-	jaspResults$title <- "Bain Linear Regression"
 	### READY ###
 	ready <- (options[["dependent"]] != "" && unlist(options[["covariates"]]) != "" && !is.null(unlist(options[["covariates"]])))
+
 	### READ DATA ###
 	readList <- .readDataBainLinearRegression(options, dataset)
 	dataset <- readList[["dataset"]]
 	missingValuesIndicator <- readList[["missingValuesIndicator"]]
+
 	### LEGEND ###
 	.bainLegendRegression(dataset, options, jaspResults)
+
 	### RESULTS ###
 	.bainLinearRegressionResultsTable(dataset, options, jaspResults, missingValuesIndicator, ready)
+
 	### COEFFICIENTS ###
 	.bainLinearRegressionCoefficientsTable(dataset, options, jaspResults, ready)
+
 	### BAYES FACTOR MATRIX ###
 	.bainBayesFactorMatrix(dataset, options, jaspResults, ready, type = "regression")
+
 	### BAYES FACTOR PLOT ###
 	.bainLinearRegressionBayesFactorPlots(dataset, options, jaspResults, ready)
 }
@@ -44,7 +48,7 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 
 	bainTable                      	<- createJaspTable("Bain Linear Regression Result")
 	jaspResults[["bainTable"]]     	<- bainTable
-	bainTable$dependOnOptions(c("dependent", "covariates", "model", "standardized"))
+	bainTable$dependOn(c("dependent", "covariates", "model", "standardized"))
 	bainTable$position <- 1
 
 	bainTable$addColumnInfo(name="hypotheses", type="string", title="")
@@ -90,7 +94,7 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 		p <- try({
 			bainResult <- Bain::Bain_regression_cm(formula = inpt[[1]], data = inpt[[2]], hyp = inpt[[3]], standardize = inpt[[4]])
 			jaspResults[["bainResult"]] <- createJaspState(bainResult)
-			jaspResults[["bainResult"]]$dependOnOptions(c("dependent", "covariates", "model", "standardized"))
+			jaspResults[["bainResult"]]$dependOn(c("dependent", "covariates", "model", "standardized"))
 		})
 
 	} else {
@@ -112,7 +116,7 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 		p <- try({
 			bainResult <- Bain::Bain_regression_cm(formula = inpt[[1]], data = inpt[[2]], hyp = inpt[[3]], standardize = inpt[[4]])
 			jaspResults[["bainResult"]] <- createJaspState(bainResult)
-			jaspResults[["bainResult"]]$dependOnOptions(c("dependent", "covariates", "model", "standardized"))
+			jaspResults[["bainResult"]]$dependOn(c("dependent", "covariates", "model", "standardized"))
 
 		})
 	}
@@ -141,14 +145,14 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 				p <- .plot.BainR(bainResult)
 				dev.off()
 	      jaspResults[["bayesFactorPlot"]] 		<- createJaspPlot(plot = p, title = "Bayes Factor Comparison")
-	      jaspResults[["bayesFactorPlot"]]			$dependOnOptions(c("bayesFactorPlot", "covariates", "dependent", "model", "standardized"))
+	      jaspResults[["bayesFactorPlot"]]			$dependOn(c("bayesFactorPlot", "covariates", "dependent", "model", "standardized"))
 				jaspResults[["bayesFactorPlot"]] 		$position <- 4
 		}
 	} else if(options[["bayesFactorPlot"]]){
 			errorPlot <- createJaspPlot(plot = NULL, title = "Bayes Factor Comparison")
 			errorPlot$setError("Plotting not possible: No analysis has been run.")
 			jaspResults[["bayesFactorPlot"]] <- errorPlot
-			jaspResults[["bayesFactorPlot"]]			$dependOnOptions(c("bayesFactorPlot", "covariates", "dependent", "model", "standardized"))
+			jaspResults[["bayesFactorPlot"]]			$dependOn(c("bayesFactorPlot", "covariates", "dependent", "model", "standardized"))
 			jaspResults[["bayesFactorPlot"]] 		$position <- 4
 	}
 }
@@ -159,7 +163,7 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 
 			coefficientsTable                                            <- createJaspTable("Coefficients")
 			jaspResults[["coefficientsTable"]]                           <- coefficientsTable
-			coefficientsTable$dependOnOptions(c("dependent", "covariates", "model", "standardized", "coefficients"))
+			coefficientsTable$dependOn(c("dependent", "covariates", "model", "standardized", "coefficients"))
 			coefficientsTable$position <- 2
 
 			overTitle <- title <- "95% Credible Interval"
@@ -227,7 +231,7 @@ BainRegressionLinearBayesian <- function (jaspResults, dataset, options, ...) {
 
 	legendTable                      	<- createJaspTable("Hypothesis Legend")
 	jaspResults[["legendTable"]]     	<- legendTable
-	legendTable$dependOnOptions(c("model", "covariates"))
+	legendTable$dependOn(c("model", "covariates"))
 	legendTable$position <- 0
 	legendTable$addColumnInfo(name="number", type="string", title="Abbreviation")
 	legendTable$addColumnInfo(name="hypothesis", type="string", title="Hypothesis")

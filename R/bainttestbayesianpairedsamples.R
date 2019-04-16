@@ -16,21 +16,24 @@
 #
 
 BainTTestBayesianPairedSamples <- function(jaspResults, dataset, options, ...) {
-  ### TITLE ###
-  jaspResults$title <- "Bain Paired Samples T-Test"
   ### READY ###
   print(unlist(options[["pairs"]]))
   ready <- !(""%in%unlist(options[["pairs"]])) && !is.null(unlist(options[["pairs"]])) # TODO: Fix this
+
   ### READ DATA ###
   readList <- .readDataBainPairedSamples(options, dataset)
   dataset <- readList[["dataset"]]
   missingValuesIndicator <- readList[["missingValuesIndicator"]]
+
   ### RESULTS ###
   .bainPairedSamplesResultsTable(dataset, options, jaspResults, missingValuesIndicator, ready)
+
   ### DESCRIPTIVES ###
   .bainPairedSamplesDescriptivesTable(dataset, options, jaspResults, ready)
+
   ### BAYES FACTOR PLOTS ###
   .bainPairedSamplesBayesFactorPlots(dataset, options, jaspResults, ready)
+
   ### DESCRIPTIVES PLOTS ###
   .bainPairedSamplesDescriptivesPlots(dataset, options, jaspResults, ready)
 }
@@ -40,7 +43,7 @@ BainTTestBayesianPairedSamples <- function(jaspResults, dataset, options, ...) {
 
     bainTable                      <- createJaspTable("Bain Paired Samples T-Test Result")
     jaspResults[["bainTable"]]     <- bainTable
-    bainTable$dependOnOptions(c("pairs", "hypothesis", "bayesFactorType"))
+    bainTable$dependOn(c("pairs", "hypothesis", "bayesFactorType"))
     bainTable$position <- 1
 
     bf.type <- options$bayesFactorType
@@ -255,7 +258,7 @@ BainTTestBayesianPairedSamples <- function(jaspResults, dataset, options, ...) {
       
     descriptivesTable                                            <- createJaspTable("Descriptive Statistics")
     jaspResults[["descriptivesTable"]]                           <- descriptivesTable
-    descriptivesTable$dependOnOptions(c("pairs", "descriptives", "descriptivesPlotsCredibleInterval"))
+    descriptivesTable$dependOn(c("pairs", "descriptives", "descriptivesPlotsCredibleInterval"))
     descriptivesTable$position <- 2
 
     descriptivesTable$addColumnInfo(name="v",                    title = "", type="string")
@@ -333,7 +336,7 @@ BainTTestBayesianPairedSamples <- function(jaspResults, dataset, options, ...) {
   if(options[["descriptivesPlots"]] && ready){
       if(is.null(jaspResults[["descriptivesPlots"]])){
       jaspResults[["descriptivesPlots"]]          <- createJaspContainer("Descriptive Plots")
-      jaspResults[["descriptivesPlots"]]          $dependOnOptions(c("variables", "testValue", "descriptivesPlots", "descriptivesPlotsCredibleInterval"))
+      jaspResults[["descriptivesPlots"]]          $dependOn(c("variables", "testValue", "descriptivesPlots", "descriptivesPlotsCredibleInterval"))
       jaspResults[["descriptivesPlots"]]			    $position <- 4
       }
       for (pair in options[["pairs"]]){
@@ -354,7 +357,7 @@ BainTTestBayesianPairedSamples <- function(jaspResults, dataset, options, ...) {
     errorPlot <- createJaspPlot(plot = NULL, title = "Descriptives Plots")
     errorPlot$setError("Plotting not possible: No analysis has been run.")
     jaspResults[["descriptivesPlots"]] <- errorPlot
-    jaspResults[["descriptivesPlots"]]$dependOnOptions(c("variables", "descriptivesPlots"))
+    jaspResults[["descriptivesPlots"]]$dependOn(c("variables", "descriptivesPlots"))
     jaspResults[["descriptivesPlots"]]$position <- 4
   }
 }
@@ -383,7 +386,7 @@ BainTTestBayesianPairedSamples <- function(jaspResults, dataset, options, ...) {
   if(options[["bayesFactorPlot"]] && ready){
       if(is.null(jaspResults[["BFplots"]])){
       jaspResults[["BFplots"]]                    <- createJaspContainer("Bayes Factor Comparison")
-      jaspResults[["BFplots"]]                    $dependOnOptions(c("variables", "testValue", "hypothesis", "bayesFactorPlot"))
+      jaspResults[["BFplots"]]                    $dependOn(c("variables", "testValue", "hypothesis", "bayesFactorPlot"))
       jaspResults[["BFplots"]]					          $position <- 3
       }
       for (pair in options[["pairs"]]){
@@ -404,7 +407,7 @@ BainTTestBayesianPairedSamples <- function(jaspResults, dataset, options, ...) {
     errorPlot <- createJaspPlot(plot = NULL, title = "Bayes Factor Comparison")
     errorPlot$setError("Plotting not possible: No analysis has been run.")
     jaspResults[["BFplots"]] <- errorPlot
-    jaspResults[["BFplots"]]$dependOnOptions(c("variables", "bayesFactorPlot"))
+    jaspResults[["BFplots"]]$dependOn(c("variables", "bayesFactorPlot"))
     jaspResults[["BFplots"]]$position <- 3
   }
 }

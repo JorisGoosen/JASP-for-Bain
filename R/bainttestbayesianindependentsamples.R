@@ -16,20 +16,23 @@
 #
 
 BainTTestBayesianIndependentSamples <- function(jaspResults, dataset, options, ...) {
-		### TITLE ###
-		jaspResults$title <- "Bain Independent Samples Welch's T-Test"
 		### READY ###
 		ready <- length(options[["variables"]][options[["variables"]] != ""] > 0) && options[["groupingVariable"]] != ""
+
 		### READ DATA ###
 		readList											<- .readDataBainTwoSample(options, dataset)
 		dataset                       <- readList[["dataset"]]
 		missingValuesIndicator        <- readList[["missingValuesIndicator"]]
+
     ### RESULTS ###
     .bainIndependentSamplesResultsTable(dataset, options, jaspResults, missingValuesIndicator, ready)
+
     ### DESCRIPTIVES ###
 		.bainIndependentSamplesDescriptivesTable(dataset, options, jaspResults, ready)
+
 		### BAYES FACTOR PLOTS ###
 		.bainOneSampleBayesFactorPlots(dataset, options, jaspResults, ready)
+
 		### DESCRIPTIVES PLOTS ###
 		.bainIndependentSamplesDescriptivesPlots(dataset, options, jaspResults, ready)
 }
@@ -40,7 +43,7 @@ BainTTestBayesianIndependentSamples <- function(jaspResults, dataset, options, .
 
   bainTable                      <- createJaspTable("Bain Independent Samples Welch's T-Test Result")
   jaspResults[["bainTable"]]     <- bainTable
-  bainTable$dependOnOptions(c("variables", "hypothesis", "bayesFactorType", "groupingVariable"))
+  bainTable$dependOn(c("variables", "hypothesis", "bayesFactorType", "groupingVariable"))
 	bainTable$position <- 1
 
   bf.type <- options$bayesFactorType
@@ -231,7 +234,7 @@ BainTTestBayesianIndependentSamples <- function(jaspResults, dataset, options, .
 
 	  descriptivesTable                                            <- createJaspTable("Descriptive Statistics")
 	  jaspResults[["descriptivesTable"]]                           <- descriptivesTable
-	  descriptivesTable$dependOnOptions(c("variables", "descriptives", "descriptivesPlotsCredibleInterval", "groupingVariable"))
+	  descriptivesTable$dependOn(c("variables", "descriptives", "descriptivesPlotsCredibleInterval", "groupingVariable"))
 		descriptivesTable$position <- 2
 
 	  descriptivesTable$addColumnInfo(name="v",                    title = "", type="string")
@@ -294,7 +297,7 @@ BainTTestBayesianIndependentSamples <- function(jaspResults, dataset, options, .
 	if(options[["descriptivesPlots"]] && ready){
 			if(is.null(jaspResults[["descriptivesPlots"]])){
 			jaspResults[["descriptivesPlots"]]          <- createJaspContainer("Descriptive Plots")
-			jaspResults[["descriptivesPlots"]]          $dependOnOptions(c("variables", "testValue", "descriptivesPlots", "descriptivesPlotsCredibleInterval", "groupingVariable"))
+			jaspResults[["descriptivesPlots"]]          $dependOn(c("variables", "testValue", "descriptivesPlots", "descriptivesPlotsCredibleInterval", "groupingVariable"))
 			jaspResults[["descriptivesPlots"]]			    $position <- 4
 			}
 			for (variable in unlist(options[["variables"]])){
@@ -324,7 +327,7 @@ BainTTestBayesianIndependentSamples <- function(jaspResults, dataset, options, .
 		errorPlot <- createJaspPlot(plot = NULL, title = "Descriptives Plots")
 		errorPlot$setError("Plotting not possible: No analysis has been run.")
 		jaspResults[["descriptivesPlots"]] <- errorPlot
-		jaspResults[["descriptivesPlots"]]$dependOnOptions(c("variables", "descriptivesPlots","groupingVariable"))
+		jaspResults[["descriptivesPlots"]]$dependOn(c("variables", "descriptivesPlots","groupingVariable"))
 		jaspResults[["descriptivesPlots"]]$position <- 4
 	}	
 }

@@ -16,24 +16,29 @@
 #
 
 BainAncovaBayesian	 <- function (jaspResults, dataset, options, ...) {
-	### TITLE ###
-	jaspResults$title <- "Bain ANCOVA"
 	### READY ###
 	ready <- options[["dependent"]] != "" && options[["fixedFactors"]] != "" && options[["covariates"]] != ""
+
 	### READ DATA ###
 	readList <- .readDataBainAncova(options, dataset)
 	dataset <- readList[["dataset"]]
 	missingValuesIndicator <- readList[["missingValuesIndicator"]]
+
 	### LEGEND ###
 	.bainLegendAncova(dataset, options, jaspResults)
+
 	### RESULTS ###
 	.bainAncovaResultsTable(dataset, options, jaspResults, missingValuesIndicator, ready)
+
 	### BAYES FACTOR MATRIX ###
 	.bainBayesFactorMatrix(dataset, options, jaspResults, ready, type = "anova")
+
 	### COEFFICIENTS ###
 	.bainAncovaCoefficientsTable(dataset, options, jaspResults, ready)
+
 	### BAYES FACTOR PLOT ###
 	.bainAnovaBayesFactorPlots(dataset, options, jaspResults, ready)
+
 	### DESCRIPTIVES PLOT ###
 	.bainAnovaDescriptivesPlot(dataset, options, jaspResults, ready, type = "ancova")
 }
@@ -45,7 +50,7 @@ BainAncovaBayesian	 <- function (jaspResults, dataset, options, ...) {
 	variables 											<- c(options$dependent, options$fixedFactors, unlist(options$covariates))
 	bainTable                      	<- createJaspTable("Bain ANCOVA Result")
 	jaspResults[["bainTable"]]     	<- bainTable
-	bainTable$dependOnOptions(c("dependent", "fixedFactors", "covariates", "model"))
+	bainTable$dependOn(c("dependent", "fixedFactors", "covariates", "model"))
 
 	bainTable$addColumnInfo(name="hypotheses", 				type="string", title="")
 	bainTable$addColumnInfo(name="BF", 						type="number", format="sf:4;dp:3", title= "BF.c")
@@ -95,7 +100,7 @@ BainAncovaBayesian	 <- function (jaspResults, dataset, options, ...) {
 		p <- try({
 			bainResult <- Bain::Bain_ancova(X = dataset, dep_var = .v(options[["dependent"]]), covariates = .v(options[["covariates"]]), group = .v(options[["fixedFactors"]]), ERr, IRr)
 			jaspResults[["bainResult"]] <- createJaspState(bainResult)
-			jaspResults[["bainResult"]]$dependOnOptions(c("dependent", "fixedFactors", "covariates", "model"))
+			jaspResults[["bainResult"]]$dependOn(c("dependent", "fixedFactors", "covariates", "model"))
 		})
 
 	} else {
@@ -117,7 +122,7 @@ BainAncovaBayesian	 <- function (jaspResults, dataset, options, ...) {
 		p <- try({
 			bainResult <- Bain::Bain_ancova_cm(X = inpt[[1]], dep_var = inpt[[2]], covariates = inpt[[3]], group = inpt[[4]], hyp = inpt[[5]])
 			jaspResults[["bainResult"]] <- createJaspState(bainResult)
-			jaspResults[["bainResult"]]$dependOnOptions(c("dependent", "fixedFactors", "covariates", "model"))
+			jaspResults[["bainResult"]]$dependOn(c("dependent", "fixedFactors", "covariates", "model"))
 		})
 	}
 
@@ -146,11 +151,11 @@ BainAncovaBayesian	 <- function (jaspResults, dataset, options, ...) {
 			bayesFactorMatrix$position <- 3
 
 			if(type == "regression")
-				bayesFactorMatrix$dependOnOptions(c("dependent", "covariates", "model", "bayesFactorMatrix", "standardized"))
+				bayesFactorMatrix$dependOn(c("dependent", "covariates", "model", "bayesFactorMatrix", "standardized"))
 			if(type == "ancova")
-				bayesFactorMatrix$dependOnOptions(c("dependent", "fixedFactors", "covariates", "model", "bayesFactorMatrix"))
+				bayesFactorMatrix$dependOn(c("dependent", "fixedFactors", "covariates", "model", "bayesFactorMatrix"))
 			if(type == "anova")
-				bayesFactorMatrix$dependOnOptions(c("dependent", "fixedFactors", "model", "bayesFactorMatrix"))
+				bayesFactorMatrix$dependOn(c("dependent", "fixedFactors", "model", "bayesFactorMatrix"))
 
 			if(!ready){
 				bayesFactorMatrix$addColumnInfo(name = "hypothesis", title = "", type = "string")
@@ -204,7 +209,7 @@ BainAncovaBayesian	 <- function (jaspResults, dataset, options, ...) {
 		if(options[["coefficients"]]){
 			coefficientsTable                      	<- createJaspTable("Coefficients for Groups plus Covariates")
 			jaspResults[["coefficientsTable"]]     	<- coefficientsTable
-			coefficientsTable$dependOnOptions(c("dependent", "fixedFactors", "covariates", "coefficients", "model"))
+			coefficientsTable$dependOn(c("dependent", "fixedFactors", "covariates", "coefficients", "model"))
 			coefficientsTable$position <- 2
 
 			coefficientsTable$addColumnInfo(name="v",    				title="Covariate",   type="string")
@@ -295,20 +300,20 @@ BainAncovaBayesian	 <- function (jaspResults, dataset, options, ...) {
 
 		legendTable                      	<- createJaspTable("Hypothesis Legend")
 		jaspResults[["legendTable"]]     	<- legendTable
-		legendTable$dependOnOptions(c("model", "fixedFactors"))
+		legendTable$dependOn(c("model", "fixedFactors"))
 		legendTable$position <- 0
 
 		legendTable$addColumnInfo(name="number", type="string", title="Abbreviation")
 		legendTable$addColumnInfo(name="hypothesis", type="string", title="Hypothesis")
 
 		if(options$model != ""){
-			rest.string <- options$model
-			rest.string <- gsub("\n", ";", rest.string)
+			rest.string <- modelConversion(options$model)
 			hyp.vector <- unlist(strsplit(rest.string, "[;]"))
-				for(i in 1:length(hyp.vector)){
-					row <- list(number = paste0("H",i), hypothesis = hyp.vector[i])
-					legendTable$addRows(row)
-				}
+
+			for(i in 1:length(hyp.vector)){
+				row <- list(number = paste0("H",i), hypothesis = hyp.vector[i])
+				legendTable$addRows(row)
+			}
 		} else if (options$fixedFactors != ""){
 			factor <- options$fixedFactors
 			fact <- dataset[, .v(factor)]

@@ -92,10 +92,10 @@ Form {
             }
 
             TextArea {
-                name: "model"
+                name:           "model"
                 implicitHeight: 200
-                infoText: Qt.platform.os == "osx" ? "\u2318 + Enter to apply" : "Crtl + Enter to apply"
-                text: ""
+                text:           ""
+                textType:       "model"
             }
         }
     }

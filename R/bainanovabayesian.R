@@ -16,24 +16,29 @@
 #
 
 BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
-	### TITLE ###
-	jaspResults$title <- "Bain ANOVA"
 	### READY ###
 	ready <- options[["fixedFactors"]] != "" && options[["dependent"]] != ""
+
 	### READ DATA ###
 	readList <- .readDataBainAnova(options, dataset)
 	dataset <- readList[["dataset"]]
 	missingValuesIndicator <- readList[["missingValuesIndicator"]]
+	
 	### LEGEND ###
 	.bainLegendAncova(dataset, options, jaspResults)
+	
 	### RESULTS ###
 	.bainAnovaResultsTable(dataset, options, jaspResults, missingValuesIndicator, ready)
+	
 	### BAYES FACTOR MATRIX ###
 	.bainBayesFactorMatrix(dataset, options, jaspResults, ready, type = "anova")
+	
 	### DESCRIPTIVES ###
 	.bainAnovaDescriptivesTable(dataset, options, jaspResults, ready)
+	
 	### BAYES FACTOR PLOT ###
 	.bainAnovaBayesFactorPlots(dataset, options, jaspResults, ready)
+	
 	### DESCRIPTIVES PLOT ###
 	.bainAnovaDescriptivesPlot(dataset, options, jaspResults, ready)
 }
@@ -45,7 +50,7 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 	variables 											<- c(options$dependent, options$fixedFactors)
 	bainTable                      	<- createJaspTable("Bain ANOVA Result")
 	jaspResults[["bainTable"]]     	<- bainTable
-	bainTable$dependOnOptions(c("dependent", "fixedFactors", "model"))
+	bainTable$dependOn(c("dependent", "fixedFactors", "model"))
 	bainTable$position <- 1
 
 	bainTable$addColumnInfo(name="hypotheses", 				type="string", title="")
@@ -98,16 +103,18 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 		p <- try(silent= FALSE, expr= {
 			bainResult <- Bain::Bain_anova(X = dataset, dep_var = .v(options[["dependent"]]), group = .v(options[["fixedFactors"]]), ERr, IRr)
 			jaspResults[["bainResult"]] <- createJaspState(bainResult)
-			jaspResults[["bainResult"]]$dependOnOptions(c("dependent", "fixedFactors", "model"))
+			jaspResults[["bainResult"]]$dependOn(c("dependent", "fixedFactors", "model"))
 		})
 
 	} else {
 
+			print(paste0('model received: "', options$model , '"'))
+
 			jaspResults$startProgressbar(3)
 			jaspResults$progressbarTick()
 
-			rest.string <- options$model
-			rest.string <- gsub("\n", ";", rest.string)
+			rest.string <- modelConversion(options$model)
+
 			jaspResults$progressbarTick()
 
 			inpt <- list()
@@ -120,7 +127,7 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 			p <- try(silent= FALSE, expr= {
 				bainResult <- Bain::Bain_anova_cm(X = inpt[[1]], dep_var = inpt[[2]], group = inpt[[3]], hyp = inpt[[4]])
 				jaspResults[["bainResult"]] <- createJaspState(bainResult)
-				jaspResults[["bainResult"]]$dependOnOptions(c("dependent", "fixedFactors", "model"))
+				jaspResults[["bainResult"]]$dependOn(c("dependent", "fixedFactors", "model"))
 			})
 		}
 
@@ -147,7 +154,7 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 
 			descriptivesTable                      	<- createJaspTable("Descriptive Statistics")
 			jaspResults[["descriptivesTable"]]     	<- descriptivesTable
-			descriptivesTable$dependOnOptions(c("dependent", "fixedFactors", "descriptives", "CredibleInterval"))
+			descriptivesTable$dependOn(c("dependent", "fixedFactors", "descriptives", "CredibleInterval"))
 			descriptivesTable$position <- 2
 
 			descriptivesTable$addColumnInfo(name="v",    		title="Level",   type="string")
@@ -191,14 +198,14 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 				p <- .plot.BainA(bainResult)
 				dev.off()
 	      jaspResults[["bayesFactorPlot"]] <- createJaspPlot(plot = p, title = "Bayes Factor Comparison")
-	      jaspResults[["bayesFactorPlot"]]$dependOnOptions(c("bayesFactorPlot", "fixedFactors", "dependent", "model"))
+	      jaspResults[["bayesFactorPlot"]]$dependOn(c("bayesFactorPlot", "fixedFactors", "dependent", "model"))
 				jaspResults[["bayesFactorPlot"]]$position <- 4
 		}
 	} else if(options[["bayesFactorPlot"]]){
 			errorPlot <- createJaspPlot(plot = NULL, title = "Bayes Factor Comparison")
 			errorPlot$setError("Plotting not possible: No analysis has been run.")
 			jaspResults[["bayesFactorPlot"]] <- errorPlot
-			jaspResults[["bayesFactorPlot"]]$dependOnOptions(c("bayesFactorPlot", "fixedFactors", "dependent", "model"))
+			jaspResults[["bayesFactorPlot"]]$dependOn(c("bayesFactorPlot", "fixedFactors", "dependent", "model"))
 			jaspResults[["bayesFactorPlot"]]$position <- 4
 	}
 }
@@ -262,14 +269,14 @@ BainAnovaBayesian <- function (jaspResults, dataset, options, ...) {
 			p <- JASPgraphs::themeJasp(p)
 
 				jaspResults[["descriptivesPlot"]] <- createJaspPlot(plot = p, title = "Descriptives Plot")
-				jaspResults[["descriptivesPlot"]]$dependOnOptions(c("descriptivesPlot", "fixedFactors", "dependent", "model"))
+				jaspResults[["descriptivesPlot"]]$dependOn(c("descriptivesPlot", "fixedFactors", "dependent", "model"))
 				jaspResults[["descriptivesPlot"]]$position <- 4
 		}
 	} else if(options[["descriptivesPlot"]]){
 			errorPlot <- createJaspPlot(plot = NULL, title = "Descriptives Plot")
 			errorPlot$setError("Plotting not possible: No analysis has been run.")
 			jaspResults[["descriptivesPlot"]] <- errorPlot
-			jaspResults[["descriptivesPlot"]]$dependOnOptions(c("descriptivesPlot", "fixedFactors", "dependent", "model"))
+			jaspResults[["descriptivesPlot"]]$dependOn(c("descriptivesPlot", "fixedFactors", "dependent", "model"))
 			jaspResults[["descriptivesPlot"]]$position <- 4
 	}
 }
